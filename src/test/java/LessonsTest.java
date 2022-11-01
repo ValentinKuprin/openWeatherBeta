@@ -3,6 +3,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -14,7 +15,7 @@ public class LessonsTest {
     private WebDriver driver;
 
     @BeforeMethod
-    public void setUp() {
+    public void setUP() {
 
         String chromeDriver = "webdriver.chrome.driver";
         String driverPath = "D:\\chromedriver.exe";
@@ -28,8 +29,16 @@ public class LessonsTest {
         } else if (Files.exists(Path.of(driverPath2))){
             System.setProperty(chromeDriver, driverPath2);
         }
+//        System.setProperty("webdriver.chrome.driver", "/D:\\chromedriver.exe");
+//        System.setProperty("webdriver.chrome.driver", "/C:\\Github\\\\tresh\\chromedriver.exe");
+//        System.setProperty("webdriver.chrome.driver", "/Users/xbrookx/Documents/chromedriver");
 
         driver = new ChromeDriver();
+    }
+
+    @AfterMethod
+    public void shutDown() {
+        driver.quit();
     }
 
     @Test
@@ -62,8 +71,5 @@ public class LessonsTest {
         String actualResult = h2CityCountryHeader.getText();
 
         Assert.assertEquals(actualResult, expectedResult);
-
-
-        driver.close();
     }
 }
