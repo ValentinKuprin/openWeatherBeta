@@ -3,15 +3,37 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class LessonsTest {
 
+    private WebDriver driver;
+
+    @BeforeMethod
+    public void setUp() {
+
+        String chromeDriver = "webdriver.chrome.driver";
+        String driverPath = "D:\\chromedriver.exe";
+        String driverPath1 = "C:\\Github\\\\tresh\\chromedriver.exe";
+        String driverPath2 = "/Users/xbrookx/Documents/chromedriver";
+
+        if (Files.exists(Path.of(driverPath))) { //существует или нет
+            System.setProperty(chromeDriver, driverPath);
+        } else if (Files.exists(Path.of(driverPath1))) {
+            System.setProperty(chromeDriver, driverPath1);
+        } else if (Files.exists(Path.of(driverPath2))){
+            System.setProperty(chromeDriver, driverPath2);
+        }
+
+        driver = new ChromeDriver();
+    }
+
     @Test
     public void testH2TagText_WhenSearchingCityCountry() throws InterruptedException {
-        System.setProperty("webdriver.chrome.driver", "/D:\\chromedriver.exe");
-//        System.setProperty("webdriver.chrome.driver", "/Users/xbrookx/Documents/chromedriver");
-        WebDriver driver = new ChromeDriver();
 
         String url = "https://openweathermap.org/";
         String cityName = "Paris";
@@ -40,10 +62,6 @@ public class LessonsTest {
         String actualResult = h2CityCountryHeader.getText();
 
         Assert.assertEquals(actualResult, expectedResult);
-
-
-
-
 
 
         driver.close();
