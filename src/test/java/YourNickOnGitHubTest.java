@@ -5,6 +5,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.nio.file.Files;
@@ -38,6 +39,12 @@ public class YourNickOnGitHubTest {
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS); // Задержки перед каждым методом, вероятно нужно использовать в BeforeTest
     }
+
+    @BeforeTest
+    public void setUp1() {
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+    }
+
 
     @AfterMethod
     public void shutDown() {
@@ -109,7 +116,7 @@ public class YourNickOnGitHubTest {
 
     @Test
     public void testConfirmAvailableSupportLinksHeader() throws InterruptedException {
-        final String[] expectedResult = {"FAQ", "How to start", "Ask a question"};
+        final String expectedResult = "FAQ, How to start, Ask a question, ";
 
         driver.get(BASE_URL);
 
@@ -120,12 +127,13 @@ public class YourNickOnGitHubTest {
         List<WebElement> supportList = driver.findElements(
                 By.xpath("//body/nav/ul/div/ul/li[@class = 'with-dropdown']/ul/li"));
 
-        ArrayList<String> supportLinkName = new ArrayList<>();
+        StringBuilder supportLinkName = new StringBuilder();
+
         for (WebElement link : supportList) {
-            supportLinkName.add(link.getText());
+            supportLinkName.append(link.getText().concat(", "));
         }
 
-        Assert.assertEquals(supportLinkName, Arrays.toString(expectedResult));
+        Assert.assertEquals(supportLinkName.toString(), expectedResult);
 
 
 
