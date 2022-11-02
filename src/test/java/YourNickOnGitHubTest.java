@@ -5,13 +5,10 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -40,10 +37,10 @@ public class YourNickOnGitHubTest {
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS); // Задержки перед каждым методом, вероятно нужно использовать в BeforeTest
     }
 
-    @BeforeTest
-    public void setUp1() {
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-    }
+//    @BeforeTest
+//    public void setUp1() {
+//        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+//    }
 
 
     @AfterMethod
@@ -108,7 +105,26 @@ public class YourNickOnGitHubTest {
      2. Подтвердить, что внизу страницы есть панель с текстом “We use cookies which are essential for the site to work. We also use non-essential cookies to help us improve our services. Any data collected is anonymised. You can allow all cookies or manage them individually.”
      3. Подтвердить, что на панели внизу страницы есть 2 кнопки “Allow all” и “Manage cookies” */
 
+    @Test
+    public void testFootorContainsTextAndTwoButtons_AllowAndManageCookies() {
+        String expectedResult = "We use cookies which are essential for the site to work. " +
+                "We also use non-essential cookies to help us improve our services. Any data collected " +
+                "is anonymised. You can allow all cookies or manage them individually.";
+        String expectedButtonOne = "Allow all";
+        String expectedButtonTwo = "Manage cookies";
 
+        driver.get(BASE_URL);
+
+        String actualResult = driver.findElement(
+                By.xpath("//body/div//p[@class = 'stick-footer-panel__description']")).getText();
+        String actualButtonOne = driver.findElement(By.xpath("//body/div//button")).getText();
+        String actualButtonTwo = driver.findElement(
+                By.xpath("//body/div//button/following-sibling::a")).getText();
+
+        Assert.assertEquals(actualResult, expectedResult);
+        Assert.assertEquals(actualButtonOne, expectedButtonOne);
+        Assert.assertEquals(actualButtonTwo, expectedButtonTwo);
+    }
 
     /** TC_11_04
      1.  Открыть базовую ссылку
@@ -134,9 +150,7 @@ public class YourNickOnGitHubTest {
         }
 
         Assert.assertEquals(supportLinkName.toString(), expectedResult);
-
-
-
-
     }
+
+
 }
