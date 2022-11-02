@@ -22,7 +22,7 @@ public class LessonsTest {
         String driverPath1 = "C:\\Github\\\\tresh\\chromedriver.exe";
         String driverPath2 = "/Users/xbrookx/Documents/chromedriver";
 
-        if (Files.exists(Path.of(driverPath))) { //существует или нет
+        if (Files.exists(Path.of(driverPath))) { // проверка существует или нет
             System.setProperty(chromeDriver, driverPath);
         } else if (Files.exists(Path.of(driverPath1))) {
             System.setProperty(chromeDriver, driverPath1);
@@ -32,6 +32,10 @@ public class LessonsTest {
 //        System.setProperty("webdriver.chrome.driver", "/D:\\chromedriver.exe");
 //        System.setProperty("webdriver.chrome.driver", "/C:\\Github\\\\tresh\\chromedriver.exe");
 //        System.setProperty("webdriver.chrome.driver", "/Users/xbrookx/Documents/chromedriver");
+//        или
+//          static {  создаем экземпляр драйвера
+//        WebDriverManager.chromeDriver().setup(); или WebDriverManager.firefoxDriver().setup() и driver = new FirefoxDriver();
+//    }
 
         driver = new ChromeDriver();
     }
@@ -44,9 +48,9 @@ public class LessonsTest {
     @Test
     public void testH2TagText_WhenSearchingCityCountry() throws InterruptedException {
 
-        String url = "https://openweathermap.org/";
-        String cityName = "Paris";
-        String expectedResult = "Paris, FR";
+        final String url = "https://openweathermap.org/";
+        final String cityName = "Paris";
+        final String expectedResult = "Paris, FR";
 
         driver.get(url);
 

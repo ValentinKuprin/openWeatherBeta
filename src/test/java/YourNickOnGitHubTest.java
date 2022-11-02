@@ -9,20 +9,19 @@ import org.testng.annotations.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
 
 public class YourNickOnGitHubTest {
 
     private WebDriver driver;
-    private final String URL = "https://openweathermap.org/";
+    private static final String BASE_URL = "https://openweathermap.org/";
 
     @BeforeMethod
     public void setUp() {
-
-        String chromeDriver = "webdriver.chrome.driver";
-        String driverPath = "D:\\chromedriver.exe";
-        String driverPath1 = "C:\\Github\\\\tresh\\chromedriver.exe";
-        String driverPath2 = "/Users/xbrookx/Documents/chromedriver";
-
+        final String chromeDriver = "webdriver.chrome.driver";
+        final String driverPath = "D:\\chromedriver.exe";
+        final String driverPath1 = "C:\\Github\\\\tresh\\chromedriver.exe";
+        final String driverPath2 = "/Users/xbrookx/Documents/chromedriver";
 
         if (Files.exists(Path.of(driverPath))) {
             System.setProperty(chromeDriver, driverPath);
@@ -34,6 +33,7 @@ public class YourNickOnGitHubTest {
 
         driver = new ChromeDriver();
         driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS); // Задержки перед каждым методом, вероятно нужно использовать в BeforeTest
     }
 
     @AfterMethod
@@ -51,11 +51,10 @@ public class YourNickOnGitHubTest {
 
     @Test
     public void testConfirmGoToPageAndTitlePage() throws InterruptedException {
+        final String expectedGuidePage = "Guide";
+        final String expectedTitle = "OpenWeatherMap API guide - OpenWeatherMap";
 
-        String expectedGuidePage = "Guide";
-        String expectedTitle = "OpenWeatherMap API guide - OpenWeatherMap";
-
-        driver.get(URL);
+        driver.get(BASE_URL);
 
         Thread.sleep(5000);
 
@@ -68,26 +67,29 @@ public class YourNickOnGitHubTest {
         Assert.assertEquals(actualResult, expectedGuidePage);
         Assert.assertEquals(title, expectedTitle);
     }
-        /** TC_11_02
-         1.  Открыть базовую ссылку
-         2.  Нажать на единицы измерения Imperial: °F, mph
-         3.  Подтвердить, что температура для города показана в Фарингейтах */
 
-        @Test
-        public void testChangeTemperature_FromCtoF() throws InterruptedException {
-            String expectedResult = "°F";
+    /**
+     * TC_11_02
+     * 1.  Открыть базовую ссылку
+     * 2.  Нажать на единицы измерения Imperial: °F, mph
+     * 3.  Подтвердить, что температура для города показана в Фарингейтах
+     */
 
-            driver.get(URL);
+    @Test
+    public void testChangeTemperature_FromCtoF() throws InterruptedException {
+        final String expectedResult = "°F";
 
-            Thread.sleep(5000);
+        driver.get(BASE_URL);
 
-            WebElement switchTemperature = driver.findElement(
-                    By.xpath("//body/main//div[@class = 'option' and contains (text(), 'Imperial:')]"));
-            switchTemperature.click();
-            WebElement heading = driver.findElement(By.xpath("//body/main//span[@class = 'heading']"));
-            String temperature = heading.getText();
-            String actualResult = temperature.substring(temperature.length()-2);
+        Thread.sleep(5000);
 
-            Assert.assertEquals(actualResult, expectedResult);
+        WebElement switchTemperature = driver.findElement(
+                By.xpath("//body/main//div[@class = 'option' and contains (text(), 'Imperial:')]"));
+        switchTemperature.click();
+        WebElement heading = driver.findElement(By.xpath("//body/main//span[@class = 'heading']"));
+        String temperature = heading.getText();
+        String actualResult = temperature.substring(temperature.length() - 2);
+
+        Assert.assertEquals(actualResult, expectedResult);
     }
 }
