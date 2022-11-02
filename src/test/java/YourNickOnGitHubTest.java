@@ -9,6 +9,9 @@ import org.testng.annotations.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class YourNickOnGitHubTest {
@@ -33,7 +36,7 @@ public class YourNickOnGitHubTest {
 
         driver = new ChromeDriver();
         driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS); // Задержки перед каждым методом, вероятно нужно использовать в BeforeTest
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS); // Задержки перед каждым методом, вероятно нужно использовать в BeforeTest
     }
 
     @AfterMethod
@@ -91,5 +94,41 @@ public class YourNickOnGitHubTest {
         String actualResult = temperature.substring(temperature.length() - 2);
 
         Assert.assertEquals(actualResult, expectedResult);
+    }
+
+    /** TC_11_03
+     1.  Открыть базовую ссылку
+     2. Подтвердить, что внизу страницы есть панель с текстом “We use cookies which are essential for the site to work. We also use non-essential cookies to help us improve our services. Any data collected is anonymised. You can allow all cookies or manage them individually.”
+     3. Подтвердить, что на панели внизу страницы есть 2 кнопки “Allow all” и “Manage cookies” */
+
+
+
+    /** TC_11_04
+     1.  Открыть базовую ссылку
+     2.  Подтвердить, что в меню Support есть 3 подменю с названиями “FAQ”, “How to start” и “Ask a question” */
+
+    @Test
+    public void testConfirmAvailableSupportLinksHeader() throws InterruptedException {
+        final String[] expectedResult = {"FAQ", "How to start", "Ask a question"};
+
+        driver.get(BASE_URL);
+
+        Thread.sleep(10000);
+        WebElement supportMenu = driver.findElement(By.xpath("//body/nav/ul/div/ul/li[@class = 'with-dropdown']"));
+        supportMenu.click();
+
+        List<WebElement> supportList = driver.findElements(
+                By.xpath("//body/nav/ul/div/ul/li[@class = 'with-dropdown']/ul/li"));
+
+        ArrayList<String> supportLinkName = new ArrayList<>();
+        for (WebElement link : supportList) {
+            supportLinkName.add(link.getText());
+        }
+
+        Assert.assertEquals(supportLinkName, Arrays.toString(expectedResult));
+
+
+
+
     }
 }
