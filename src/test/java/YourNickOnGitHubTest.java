@@ -1,17 +1,19 @@
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import javax.swing.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class YourNickOnGitHubTest {
@@ -178,7 +180,7 @@ public class YourNickOnGitHubTest {
         WebElement supportMenu = driver.findElement(By.xpath("//body/nav/ul/div/ul/li[@class = 'with-dropdown']"));
         supportMenu.click();
 
-        Thread.sleep(7000);
+        Thread.sleep(3000);
 
 //        WebElement linkAskQuestion = driver.findElement(
 //                By.linkText("//body/nav/ul/div/ul/li[@class = 'with-dropdown']/ul/li/a[@href = 'https://home.openweathermap.org/questions']"));
@@ -186,11 +188,19 @@ public class YourNickOnGitHubTest {
         driver.findElement(
                 By.xpath("//ul[@class = 'dropdown-menu dropdown-visible']/li/a[text()='Ask a question']")).click();
 
-        Thread.sleep(11000);
+        Thread.sleep(10000);
 
-        WebElement emailField = driver.findElement(By.id("question_form_email"));
+        Set<String> windiwsIds = driver.getWindowHandles();
+
+        Iterator<String> itr = windiwsIds.iterator();
+        String childWindiwsId = itr.next();
+        driver.switchTo().window(childWindiwsId);
+
+        WebElement emailField = driver.findElement(By.xpath("//input[@id = 'question_form_email']"));
         emailField.click();
         emailField.sendKeys("test@test.com");
+
+
         WebElement subjectField = driver.findElement(By.xpath("//div/input[@class='form-control select required']"));
         subjectField.click();
         driver.findElement(By.xpath("//div/select/option[@value='Sales']"));
@@ -278,9 +288,41 @@ public class YourNickOnGitHubTest {
      */
 
     @Test
-    public void testReloadingHomePage() {
+    public void testReloadingHomePage() throws InterruptedException {
+
+        driver.get(BASE_URL);
+
+        Thread.sleep(5000);
+
+        driver.findElement(By.xpath("//body/nav/ul/li/a[@href='/']")).click();
+        String actualResult = driver.getCurrentUrl();
+
+        Assert.assertEquals(BASE_URL, actualResult);
+    }
+
+    /** TC_11_09
+     1.  Открыть базовую ссылку
+     2.  В строке поиска в навигационной панели набрать “Rome”
+     3.  Нажать клавишу Enter
+     4.  Подтвердить, что вы перешли на страницу в ссылке которой содержатся слова “find” и “Rome”
+     5. Подтвердить, что в строке поиска на новой странице вписано слово “Rome” */
+
+    @Test
+    public void testUrlContains_FindWordAnd_RomeWord_And_FieldSearchContains_RomeWord() throws InterruptedException {
+        String actualOne = "find";
+        String actualTwo = "Rome";
+
+        driver.get(BASE_URL);
+
+        Thread.sleep(7500);
+
+        WebElement searchField = driver.findElement(By.xpath("//body/nav/ul/div/form[@role='search']"));
+        searchField.click();
+        searchField.sendKeys("Rome\n");
+        searchField.sendKeys(Keys.ENTER);
 
     }
+
 
 
 }
