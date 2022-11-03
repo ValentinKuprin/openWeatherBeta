@@ -247,7 +247,7 @@ public class OmayoBlogspotCom {
     }
 
     @Test
-    public void testDragAndDrop() { //перетягивание элемента из точки А в точку Б
+    public void testDragAndDrop() { //перетягивание элемента из точки А в точку Б drag and drop
         String chromeDriver = "webdriver.chrome.driver";
         String driverPath = "C:\\Users\\xBrooKx\\Downloads\\chromedriver_win32\\chromedriver.exe";
         System.setProperty(chromeDriver, driverPath);

@@ -2,11 +2,13 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.swing.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -156,16 +158,69 @@ public class YourNickOnGitHubTest {
         Assert.assertEquals(supportLinkName.toString(), expectedResult);
     }
 
-    /** TC_11_05
-     1. Открыть базовую ссылку
-     2. Нажать пункт меню Support → Ask a question
-     3. Заполнить поля Email, Subject, Message
-     4. Не подтвердив CAPTCHA, нажать кнопку Submit
-     5. Подтвердить, что пользователю будет показана ошибка “reCAPTCHA verification failed, please try again.” */
+    /**
+     * TC_11_05
+     * 1. Открыть базовую ссылку
+     * 2. Нажать пункт меню Support → Ask a question
+     * 3. Заполнить поля Email, Subject, Message
+     * 4. Не подтвердив CAPTCHA, нажать кнопку Submit
+     * 5. Подтвердить, что пользователю будет показана ошибка “reCAPTCHA verification failed, please try again.”
+     */
 
     @Test
     public void testSupportAskQuestion_WithoutCaptcha() throws InterruptedException {
         String expectedResult = "reCAPTCHA verification failed, please try again.";
+
+        driver.get(BASE_URL);
+
+        Thread.sleep(7000);
+
+        WebElement supportMenu = driver.findElement(By.xpath("//body/nav/ul/div/ul/li[@class = 'with-dropdown']"));
+        supportMenu.click();
+
+        Thread.sleep(7000);
+
+//        WebElement linkAskQuestion = driver.findElement(
+//                By.linkText("//body/nav/ul/div/ul/li[@class = 'with-dropdown']/ul/li/a[@href = 'https://home.openweathermap.org/questions']"));
+//        WebElement linkAskQuestion = driver.findElement(By.linkText("https://home.openweathermap.org/questions"));
+        driver.findElement(
+                By.xpath("//ul[@class = 'dropdown-menu dropdown-visible']/li/a[text()='Ask a question']")).click();
+
+        Thread.sleep(11000);
+
+        WebElement emailField = driver.findElement(By.id("question_form_email"));
+        emailField.click();
+        emailField.sendKeys("test@test.com");
+        WebElement subjectField = driver.findElement(By.xpath("//div/input[@class='form-control select required']"));
+        subjectField.click();
+        driver.findElement(By.xpath("//div/select/option[@value='Sales']"));
+        WebElement messageField = driver.findElement(By.xpath("//div/input[@class='form-control text required']"));
+        messageField.click();
+        messageField.sendKeys("Message for example");
+        driver.findElement(By.xpath("//div/input[@type= 'submit']"));
+
+        String errorNotCaptcha = driver.findElement(By.xpath("//div[@class='help-block']")).getText();
+
+        Assert.assertEquals(errorNotCaptcha, expectedResult);
+
+//TODO: не работает ссылка Support → Ask a question
+    }
+
+    /**
+     * TC_11_06
+     * 1.  Открыть базовую ссылку
+     * 2.  Нажать пункт меню Support → Ask a question
+     * 3.  Оставить значение по умолчанию в checkbox Are you an OpenWeather user?
+     * 4. Оставить пустым поле Email
+     * 5. Заполнить поля  Subject, Message
+     * 6. Подтвердить CAPTCHA
+     * 7. Нажать кнопку Submit
+     * 8. Подтвердить, что в поле Email пользователю будет показана ошибка “can't be blank”
+     */
+
+    @Test
+    public void testSupportAskQuestion_CheckboxDefaultAndEmailEmpty() throws InterruptedException {
+        String expectedResult = "can't be blank";
 
         driver.get(BASE_URL);
 
@@ -176,41 +231,17 @@ public class YourNickOnGitHubTest {
         WebElement linkAskQuestion = driver.findElement(
                 By.linkText("//body/nav/ul/div/ul/li[@class = 'with-dropdown']/ul/li/a[@href = 'https://home.openweathermap.org/questions']"));
         linkAskQuestion.click();
-//TODO: не работает ссылка Support → Ask a question
+
+        //TODO: не работает ссылка Support → Ask a question
     }
 
-        /** TC_11_06
-         1.  Открыть базовую ссылку
-         2.  Нажать пункт меню Support → Ask a question
-         3.  Оставить значение по умолчанию в checkbox Are you an OpenWeather user?
-         4. Оставить пустым поле Email
-         5. Заполнить поля  Subject, Message
-         6. Подтвердить CAPTCHA
-         7. Нажать кнопку Submit
-         8. Подтвердить, что в поле Email пользователю будет показана ошибка “can't be blank” */
-
-        @Test
-        public void testSupportAskQuestion_CheckboxDefaultAndEmailEmpty() throws InterruptedException {
-            String expectedResult = "can't be blank";
-
-            driver.get(BASE_URL);
-
-            Thread.sleep(10000);
-
-            WebElement supportMenu = driver.findElement(By.xpath("//body/nav/ul/div/ul/li[@class = 'with-dropdown']"));
-            supportMenu.click();
-            WebElement linkAskQuestion = driver.findElement(
-                    By.linkText("//body/nav/ul/div/ul/li[@class = 'with-dropdown']/ul/li/a[@href = 'https://home.openweathermap.org/questions']"));
-            linkAskQuestion.click();
-
-            //TODO: не работает ссылка Support → Ask a question
-    }
-
-    /** TC_11_07
-     1.  Открыть базовую ссылку
-     2.  Нажать на единицы измерения Imperial: °F, mph
-     3.  Нажать на единицы измерения Metric: °C, m/s
-     4.  Подтвердить, что в результате этих действий, единицы измерения температуры изменились с F на С */
+    /**
+     * TC_11_07
+     * 1.  Открыть базовую ссылку
+     * 2.  Нажать на единицы измерения Imperial: °F, mph
+     * 3.  Нажать на единицы измерения Metric: °C, m/s
+     * 4.  Подтвердить, что в результате этих действий, единицы измерения температуры изменились с F на С
+     */
 
     @Test
     public void testChangeTemperature_From_F_to_C() throws InterruptedException {
@@ -221,12 +252,12 @@ public class YourNickOnGitHubTest {
         Thread.sleep(5000);
 
         WebElement baseTC = driver.findElement(By.xpath("//body/main//span[@class='heading']"));
-        String typeTC = baseTC.getText().substring(baseTC.getText().length()-1, baseTC.getText().length());
+        String typeTC = baseTC.getText().substring(baseTC.getText().length() - 1);
         WebElement switchTemperatureTo_F = driver.findElement(
                 By.xpath("//body/main//div[@class = 'option' and contains (text(), 'Imperial:')]"));
         switchTemperatureTo_F.click();
         WebElement baseTF = driver.findElement(By.xpath("//body/main//span[@class='heading']"));
-        String typeTF = baseTC.getText().substring(baseTC.getText().length()-1, baseTC.getText().length());
+        String typeTF = baseTC.getText().substring(baseTC.getText().length() - 1);
 
         if (!(typeTC.equals(typeTF))) {
             WebElement switchTemperatureTo_C = driver.findElement(
@@ -234,22 +265,22 @@ public class YourNickOnGitHubTest {
             switchTemperatureTo_C.click();
         }
 
-        String actualResult = baseTC.getText().substring(baseTC.getText().length()-1, baseTC.getText().length());
+        String actualResult = baseTC.getText().substring(baseTC.getText().length() - 1);
 
         Assert.assertEquals(actualResult, expectedResult);
-
-
-
-
-
-
-
     }
 
+    /**
+     * TC_11_08
+     * 1.  Открыть базовую ссылку
+     * 2.  Нажать на лого компании
+     * 3.  Дождаться, когда произойдет перезагрузка сайта, и подтвердить, что текущая ссылка не изменилась
+     */
 
+    @Test
+    public void testReloadingHomePage() {
 
-
-
+    }
 
 
 }
