@@ -10,7 +10,6 @@ import org.testng.annotations.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -336,7 +335,37 @@ public class YourNickOnGitHubTest {
 
         Assert.assertTrue(driver.getCurrentUrl().contains(expectedOne));
         Assert.assertTrue(driver.getCurrentUrl().contains(expectedTwo));
-        Assert.assertEquals(actualResult, expectedTwo);
+        Assert.assertEquals(actualResult, expectedTwo); //TODO: Не получается найти результат
+    }
+
+    /** TC_11_10
+     1.  Открыть базовую ссылку
+     2.  Нажать на пункт меню API
+     3.  Подтвердить, что на открывшейся странице пользователь видит 30 оранжевых кнопок */
+
+    @Test
+    public void testVisible30OrangeButton() throws InterruptedException {
+        int expected = 30;
+
+        driver.get(BASE_URL);
+
+        Thread.sleep(5000);
+
+        driver.findElement(By.xpath("//li/a[@href = '/api']")).click();
+
+        Thread.sleep(2000);
+
+        int actualResult = driver.findElements(
+                By.xpath("//a[@class = 'btn_block orange round' or @class = 'ow-btn round btn-orange']")).size();
+
+        Assert.assertEquals(actualResult, expected);
+
+
+
+
+
+
+
     }
 
 
