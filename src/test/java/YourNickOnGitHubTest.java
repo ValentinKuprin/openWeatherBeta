@@ -10,7 +10,6 @@ import org.testng.annotations.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -177,6 +176,8 @@ public class YourNickOnGitHubTest {
 
         Thread.sleep(7000);
 
+        String firstWindow = driver.getWindowHandle();
+
         WebElement supportMenu = driver.findElement(By.xpath("//body/nav/ul/div/ul/li[@class = 'with-dropdown']"));
         supportMenu.click();
 
@@ -190,19 +191,25 @@ public class YourNickOnGitHubTest {
 
         Thread.sleep(10000);
 
-        Set<String> windiwsIds = driver.getWindowHandles();
+        Set<String> currentWindows = driver.getWindowHandles();
 
-        Iterator<String> itr = windiwsIds.iterator();
-        String childWindiwsId = itr.next();
-        driver.switchTo().window(childWindiwsId);
+        String newWindow = "";
+
+        for (String window : currentWindows) {
+            if (!window.equals(firstWindow)) {
+                newWindow = window;
+                break;
+            }
+        }
+
+        driver.switchTo().window(newWindow);
 
         WebElement emailField = driver.findElement(By.xpath("//input[@id = 'question_form_email']"));
         emailField.click();
         emailField.sendKeys("test@test.com");
 
-
-        WebElement subjectField = driver.findElement(By.xpath("//div/input[@class='form-control select required']"));
-        subjectField.click();
+//        WebElement subjectField = driver.findElement(By.xpath("//div/input[@id = 'question_form_subject']"));
+//        subjectField.click();
         driver.findElement(By.xpath("//div/select/option[@value='Sales']"));
         WebElement messageField = driver.findElement(By.xpath("//div/input[@class='form-control text required']"));
         messageField.click();
@@ -300,28 +307,38 @@ public class YourNickOnGitHubTest {
         Assert.assertEquals(BASE_URL, actualResult);
     }
 
-    /** TC_11_09
-     1.  Открыть базовую ссылку
-     2.  В строке поиска в навигационной панели набрать “Rome”
-     3.  Нажать клавишу Enter
-     4.  Подтвердить, что вы перешли на страницу в ссылке которой содержатся слова “find” и “Rome”
-     5. Подтвердить, что в строке поиска на новой странице вписано слово “Rome” */
+    /**
+     * TC_11_09
+     * 1.  Открыть базовую ссылку
+     * 2.  В строке поиска в навигационной панели набрать “Rome”
+     * 3.  Нажать клавишу Enter
+     * 4.  Подтвердить, что вы перешли на страницу в ссылке которой содержатся слова “find” и “Rome”
+     * 5. Подтвердить, что в строке поиска на новой странице вписано слово “Rome”
+     */
 
     @Test
     public void testUrlContains_FindWordAnd_RomeWord_And_FieldSearchContains_RomeWord() throws InterruptedException {
-        String actualOne = "find";
-        String actualTwo = "Rome";
+        String expectedOne = "find";
+        String expectedTwo = "Rome";
 
         driver.get(BASE_URL);
 
         Thread.sleep(7500);
 
-        WebElement searchField = driver.findElement(By.xpath("//body/nav/ul/div/form[@role='search']"));
+        WebElement searchField = driver.findElement(By.xpath("//body/nav/ul/div/form/input[@type='text']"));
         searchField.click();
-        searchField.sendKeys("Rome\n");
+        searchField.sendKeys("Rome");
         searchField.sendKeys(Keys.ENTER);
 
+        Thread.sleep(5000);
+
+        String actualResult = driver.findElement(By.xpath("//div/input[@id = 'search_str']")).getText();
+
+        Assert.assertTrue(driver.getCurrentUrl().contains(expectedOne));
+        Assert.assertTrue(driver.getCurrentUrl().contains(expectedTwo));
+        Assert.assertEquals(actualResult, expectedTwo);
     }
+
 
 
 
