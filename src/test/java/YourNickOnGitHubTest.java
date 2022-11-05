@@ -331,11 +331,12 @@ public class YourNickOnGitHubTest {
 
         Thread.sleep(5000);
 
-        String actualResult = driver.findElement(By.xpath("//div/input[@id = 'search_str']")).getText();
+        String actualResult = driver.findElement(
+                By.xpath("//div/input[@id = 'search_str']")).getAttribute("value");
 
         Assert.assertTrue(driver.getCurrentUrl().contains(expectedOne));
         Assert.assertTrue(driver.getCurrentUrl().contains(expectedTwo));
-        Assert.assertEquals(actualResult, expectedTwo); //TODO: Не получается найти результат
+        Assert.assertEquals(actualResult, expectedTwo);
     }
 
     /** TC_11_10
