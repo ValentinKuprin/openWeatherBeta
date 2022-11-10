@@ -3,6 +3,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Iterator;
@@ -152,6 +153,31 @@ public class OmayoBlogspotCom {
 
         driver.findElement(By.xpath("//button[text()= 'Check this']")).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.id("dte"))).click(); //Что бы элемент был кликабельным
+    }
+
+    @Test
+    public void test_EnableUnavailableButton() { //Чек бокс доступен после нажатия на кнопку
+        String chromeDriver = "webdriver.chrome.driver";
+        String driverPath = "C:\\Users\\xBrooKx\\Downloads\\chromedriver_win32\\chromedriver.exe";
+        System.setProperty(chromeDriver, driverPath);
+        WebDriver driver = new ChromeDriver();
+        driver.get(URL);
+
+        WebDriverWait wait = new WebDriverWait(driver, 12);
+
+        String buttonIs = driver.findElement(By.id("dte")).getAttribute("disabled"); //проверяет доступен ли чекбокс true = disables
+        WebElement buttonCheckThis = driver.findElement(By.xpath("//div[@class='widget-content']/button[text() = 'Check this']"));
+        WebElement checkbox = driver.findElement(By.id("dte"));
+
+        if (buttonIs.equals("true")) { //если кнопка не доступна
+            buttonCheckThis.click(); // нажимаем кнопку
+            wait.until(ExpectedConditions.elementToBeClickable(By.id("dte"))); // ждем когда чекбокс будет кликабельным
+            checkbox.click(); //нажимаем
+        } else {
+            driver.findElement(By.id("dte")).click();
+        }
+
+        Assert.assertTrue(driver.findElement(By.id("dte")).isSelected());
     }
 
     @Test

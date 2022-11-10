@@ -43,7 +43,6 @@ public class YourNickOnGitHubTest {
 //    public void setUp1() {
 //        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 //    }
-
     @AfterMethod
     public void shutDown() {
         driver.quit();
@@ -61,6 +60,7 @@ public class YourNickOnGitHubTest {
     public void testConfirmGoToPageAndTitlePage() throws InterruptedException {
         final String expectedGuidePage = "Guide";
         final String expectedTitle = "OpenWeatherMap API guide - OpenWeatherMap";
+        final String expectedResult = "https://openweathermap.org/guide";
 
         driver.get(BASE_URL);
 
@@ -71,9 +71,11 @@ public class YourNickOnGitHubTest {
         WebElement h1Header = driver.findElement(By.xpath("//body/main//h1[@class= 'breadcrumb-title']"));
         String actualResult = h1Header.getText();
         String title = driver.getTitle();
+        String actualCurrentUrl = driver.getCurrentUrl();
 
         Assert.assertEquals(actualResult, expectedGuidePage);
         Assert.assertEquals(title, expectedTitle);
+        Assert.assertEquals(actualCurrentUrl, expectedResult);
     }
 
     /**
@@ -93,6 +95,7 @@ public class YourNickOnGitHubTest {
 
         WebElement switchTemperature = driver.findElement(
                 By.xpath("//body/main//div[@class = 'option' and contains (text(), 'Imperial:')]"));
+        //[div][@class = 'option']/following-sibling::div
         switchTemperature.click();
         WebElement heading = driver.findElement(By.xpath("//body/main//span[@class = 'heading']"));
         String temperature = heading.getText();
@@ -119,7 +122,7 @@ public class YourNickOnGitHubTest {
         driver.get(BASE_URL);
 
         String actualResult = driver.findElement(
-                By.xpath("//body/div//p[@class = 'stick-footer-panel__description']")).getText();
+                By.className("stick-footer-panel__description")).getText();
         String actualButtonOne = driver.findElement(By.xpath("//body/div//button")).getText();
         String actualButtonTwo = driver.findElement(
                 By.xpath("//body/div//button/following-sibling::a")).getText();
@@ -360,16 +363,5 @@ public class YourNickOnGitHubTest {
                 By.xpath("//a[@class = 'btn_block orange round' or @class = 'ow-btn round btn-orange']")).size();
 
         Assert.assertEquals(actualResult, expected);
-
-
-
-
-
-
-
     }
-
-
-
-
 }
